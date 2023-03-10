@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.24d313ac.css",
+    "main.js": "/static/js/main.f50ffaec.js",
+    "static/media/banner.png": "/static/media/banner.26de7fbdeb63350b5cee.png",
+    "static/media/trophy.png": "/static/media/trophy.c73d7ab31964db9a8549.png",
+    "static/media/firework.gif": "/static/media/firework.de719edebb81b4b412cf.gif",
+    "index.html": "/index.html",
+    "static/media/tailwind-css-logo.svg": "/static/media/tailwind-css-logo.8b7508c1ea8498c9f23537f86942e95c.svg",
+    "main.24d313ac.css.map": "/static/css/main.24d313ac.css.map",
+    "main.f50ffaec.js.map": "/static/js/main.f50ffaec.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.24d313ac.css",
+    "static/js/main.f50ffaec.js"
+  ]
+}
