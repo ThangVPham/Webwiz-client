@@ -1,5 +1,5 @@
 ## Live Demo:
-https://web-wiz.herokuapp.com/
+https://webwiz.onrender.com/
 
 
 
