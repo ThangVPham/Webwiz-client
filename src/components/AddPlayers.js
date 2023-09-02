@@ -71,7 +71,7 @@ function AddPlayers() {
     })
       .then(() => {
         console.log("players added");
-        window.location.href = `/tournaments/${tournamentId}`;
+        window.location.href = `/`;
       })
       .catch((e) => {
         console.log(e.message);
