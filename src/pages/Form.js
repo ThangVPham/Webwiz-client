@@ -5,55 +5,34 @@ import img from "../asset/notfound.png";
 // import useFetch from "./useFetch";
 
 function Form({ navigation }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState("Single Elimination");
-  const [game, setGame] = useState("");
-  const [gameID, setGameID] = useState("");
-  const [imgURL, setImgURL] = useState("");
-  const [date, setDate] = useState("");
-  const [competitors, setCompetitors] = useState(8);
-  const [status] = useState("Pending");
   const [gameArray, setGameArray] = useState([]);
-  console.log(gameArray);
-  const [valid, setValid] = useState(true);
+  const [formValid, setFormValid] = useState(true);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  useEffect(() => {}, [gameArray]);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let tournament = {};
-    if (name && game && date && imgURL && gameID) {
-      tournament = {
-        name,
-        description,
-        type,
-        game,
-        date,
-        competitors,
-        status,
-        imgURL,
-        gameID,
-      };
-
-      tournament.firstRound = {
-        status: false,
-        matches: [
-          {
-            matchName: "",
-            players: [],
-            winner: "",
-            loser: "",
-          },
-        ],
-      };
-      tournament.secondRound = { status: false };
-      tournament.champion = "";
-      tournament.runnUp = "";
-      tournament.thirdPlace = "";
-
-      tournament.secondRound.matches = [
+  const [newTournament, setNewTournament] = useState({
+    name: "",
+    description: "",
+    game: "",
+    gameID: "",
+    imgURL: "",
+    type: "Single Elimination",
+    competitors: 8,
+    date: "",
+    status: "Pending",
+    firstRound: {
+      status: false,
+      matches: [
+        {
+          matchName: "",
+          players: [],
+          winner: "",
+          loser: "",
+        },
+      ],
+    },
+    secondRound: {
+      status: false,
+      matches: [
         {
           matchId: 5,
           matchName: "Match E",
@@ -62,40 +41,64 @@ function Form({ navigation }) {
           loser: "",
         },
         {
-          matchId: 5,
-          matchName: "Match E",
+          matchId: 6,
+          matchName: "Match F",
           players: [],
           winner: "",
           loser: "",
           status: false,
         },
-      ];
-      tournament.thirdRound = {
-        matchId: 7,
-        matchName: "Match G",
-        players: [],
-        winner: "",
-        loser: "",
-        status: false,
-      };
-      tournament.final = {
-        matchId: 8,
-        matchName: "Match H",
-        players: [],
-        winner: "",
-        loser: "",
-        status: false,
-      };
+      ],
+    },
+    thirdRound: {
+      matchId: 7,
+      matchName: "Match G",
+      players: [],
+      winner: "",
+      loser: "",
+      status: false,
+    },
+    final: {
+      matchId: 8,
+      matchName: "Match H",
+      players: [],
+      winner: "",
+      loser: "",
+      status: false,
+    },
+    champion: "",
+    runnUp: "",
+    thirdPlace: "",
+  });
+  console.log(formValid);
+  const navigate = useNavigate();
+  const url = "https://webwiz-server.onrender.com";
+  // const url = "http://localhost:5000";
+  useEffect(() => {}, [gameArray]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      fetch("https://webwiz-server.onrender.com/new-tournaments", {
+    if (
+      newTournament.name &&
+      newTournament.game &&
+      newTournament.date &&
+      newTournament.imgURL &&
+      newTournament.gameID
+    ) {
+      fetch(`${url}/new-tournaments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(tournament),
-      }).then(() => {
-        navigate("/");
-      });
+        body: JSON.stringify(newTournament),
+      })
+        .then(() => {
+          console.log(newTournament);
+          navigate("/");
+        })
+        .catch((e) => {
+          console.log(e.message);
+        });
     } else {
-      setValid(false);
+      setFormValid(false);
     }
   };
 
@@ -104,10 +107,10 @@ function Form({ navigation }) {
       if (e.key === "Enter" || e.type === "click") {
         setGameArray([]);
         setLoading(true);
-        await fetch("https://webwiz-server.onrender.com/games", {
+        await fetch(`${url}/games`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: game }),
+          body: JSON.stringify({ name: newTournament.game }),
         })
           .then((data) => data.json())
           .then((data) => {
@@ -135,7 +138,7 @@ function Form({ navigation }) {
           </div>
 
           <div className="bg-gray-700 ">
-            {!valid && (
+            {!formValid && (
               <div className="pt-2 pb-1 px-5 text-rose-600">
                 <p>
                   <i>Highlighted fields are required.*</i>
@@ -148,15 +151,19 @@ function Form({ navigation }) {
             <div className="pb-2 px-5">
               <input
                 className={
-                  !valid
-                    ? name
+                  !formValid
+                    ? newTournament.name
                       ? " bg-slate-800 w-full"
                       : "bg-slate-800 w-full border-2 border-rose-500"
                     : " bg-slate-800 w-full"
                 }
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={newTournament.name}
+                onChange={(e) =>
+                  setNewTournament((oldState) => {
+                    return { ...oldState, name: e.target.value };
+                  })
+                }
               />
             </div>
             <div className="pt-2 pb-1 px-5">
@@ -166,8 +173,12 @@ function Form({ navigation }) {
               <textarea
                 className=" bg-slate-800 w-full"
                 type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={newTournament.description}
+                onChange={(e) =>
+                  setNewTournament((oldState) => {
+                    return { ...oldState, description: e.target.value };
+                  })
+                }
               />
             </div>
           </div>
@@ -183,16 +194,18 @@ function Form({ navigation }) {
             <div className="pb-2 px-5 flex ">
               <input
                 className={
-                  !valid
-                    ? game
+                  !formValid
+                    ? newTournament.game
                       ? " bg-slate-800 w-full"
                       : " bg-slate-800 w-full border-2 border-rose-500"
                     : " bg-slate-800 w-full"
                 }
                 type="text"
-                value={game}
+                value={newTournament.game}
                 onChange={(e) => {
-                  setGame(e.target.value);
+                  setNewTournament((oldState) => {
+                    return { ...oldState, game: e.target.value };
+                  });
                 }}
                 onKeyDown={(e) => searchGame(e)}
                 placeholder="Game Title"
@@ -223,18 +236,24 @@ function Form({ navigation }) {
             )}
             {gameArray.length > 0 && gameArray[0].name !== "Not Found" && (
               <div className="pb-2 px-5 flex flex-wrap w-full justify-start">
-                {gameArray.map((item) => {
+                {gameArray.map((item, index) => {
                   return (
                     <div
+                      key={index}
                       className={
-                        item.id === gameID
+                        item.id === newTournament.gameID
                           ? "p-1 basis-24 gameItems gameItems-active"
                           : "p-1 basis-24 gameItems"
                       }
                       onClick={(e) => {
-                        setGame(item.name);
-                        setGameID(item.id);
-                        setImgURL(item.coverURL);
+                        setNewTournament((oldState) => {
+                          return {
+                            ...oldState,
+                            name: item.name,
+                            gameID: item.id,
+                            imgURL: item.coverURL,
+                          };
+                        });
                       }}
                     >
                       <img
@@ -261,8 +280,12 @@ function Form({ navigation }) {
                 className=" bg-slate-800 w-full"
                 name="game-type"
                 id="game-type"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
+                value={newTournament.type}
+                onChange={(e) => {
+                  setNewTournament((oldState) => {
+                    return { ...oldState, type: e.target.value };
+                  });
+                }}
               >
                 <option value="Single Elimination">Single Elimination</option>
                 <option value="Leaderboard">Leaderboard</option>
@@ -278,19 +301,27 @@ function Form({ navigation }) {
                 id="4 players"
                 name="player"
                 disabled
-                value={competitors}
-                onSelect={() => setCompetitors(4)}
+                value={newTournament.competitors}
+                onSelect={() => {
+                  setNewTournament((oldState) => {
+                    return { ...oldState, competitors: 4 };
+                  });
+                }}
               />
-              <label for="4 players"> 4 players &nbsp;&nbsp;</label>
+              <label htmlFor="4 players"> 4 players &nbsp;&nbsp;</label>
               <input
                 type="radio"
                 id="8 players"
                 name="player"
-                value={competitors}
-                onSelect={() => setCompetitors(8)}
+                value={newTournament.competitors}
+                onSelect={() => {
+                  setNewTournament((oldState) => {
+                    return { ...oldState, competitors: 8 };
+                  });
+                }}
                 defaultChecked
               />
-              <label for="8 players"> 8 players</label>
+              <label htmlFor="8 players"> 8 players</label>
             </div>
             <div className="pt-2 pb-1 px-5">
               <label htmlFor="">Start Time:</label>
@@ -298,15 +329,19 @@ function Form({ navigation }) {
             <div className="pt-1 pb-3 px-5 ">
               <input
                 className={
-                  !valid
-                    ? date
+                  !formValid
+                    ? newTournament.date
                       ? " bg-slate-800 w-full"
                       : " bg-slate-800 w-full border-2 border-rose-500"
                     : " bg-slate-800 w-full"
                 }
                 type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
+                value={newTournament.date}
+                onChange={(e) => {
+                  setNewTournament((oldState) => {
+                    return { ...oldState, date: e.target.value };
+                  });
+                }}
               />
             </div>
           </div>

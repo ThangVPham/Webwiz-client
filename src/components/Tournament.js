@@ -7,7 +7,7 @@ function Tournament() {
   const tournamentId = useParams();
 
   const url = `https://webwiz-server.onrender.com/tournaments/${tournamentId.id}`;
-  // const url = `http://localhost:4000/tournaments/${tournamentId.id}`;
+  // const url = `http://localhost:5000/tournaments/${tournamentId.id}`;
 
   const { data: tournament, isPending } = useFetch(url);
   const [matchState, setMatchState] = useState(false);

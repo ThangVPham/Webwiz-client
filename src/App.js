@@ -1,12 +1,13 @@
 import "./App.css";
-import React from "react";
+import React, { useReducer, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
+import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
-import Form from "./components/Form";
+import Form from "./pages/Form";
 import Tournament from "./components/Tournament";
 import Footer from "./components/Footer";
 import AddPlayers from "./components/AddPlayers";
+
 function App() {
   return (
     <Router>

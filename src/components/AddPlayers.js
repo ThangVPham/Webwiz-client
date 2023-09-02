@@ -6,9 +6,11 @@ function AddPlayers() {
   const location = useLocation();
   const tournamentId = location.state.id;
 
-  const url = `https://webwiz-server.onrender.com/${tournamentId}`;
+  const url = `https://webwiz-server.onrender.com/tournaments/${tournamentId}`;
+  // const url = `http://localhost:5000/tournaments/${tournamentId}`;
 
-  const url_addplayers = `https://webwiz-server.onrender.com/addplayers/${tournamentId}`;
+  // const url_addplayers = `https://webwiz-server.onrender.com/addplayers/${tournamentId}`;
+  // const url_addplayers = `http://localhost:5000/tournaments/${tournamentId}`;
 
   const [competitorA, setCompetitorA] = useState("");
   const [competitora, setCompetitora] = useState("");
@@ -20,7 +22,7 @@ function AddPlayers() {
   const [competitord, setCompetitord] = useState("");
 
   const { data: tournament, isPending } = useFetch(url);
-
+  console.log(tournament);
   useEffect(() => {
     if (!isPending) {
       console.log(tournament);
@@ -29,7 +31,7 @@ function AddPlayers() {
 
   const addPlayers = (e) => {
     e.preventDefault();
-
+    console.log(tournament);
     tournament.firstRound.matches = [
       {
         matchId: 1,
@@ -60,17 +62,20 @@ function AddPlayers() {
         loser: "",
       },
     ];
-
     tournament.status = "In Progress";
-    console.log("players added");
-    fetch(url_addplayers, {
-      method: "POST",
+    console.log(tournament);
+    fetch(url, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(tournament),
-    }).then(() => {
-      console.log("players added");
-      window.location.href = `/tournaments/${tournamentId}`;
-    });
+    })
+      .then(() => {
+        console.log("players added");
+        window.location.href = `/tournaments/${tournamentId}`;
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
   };
 
   return (
